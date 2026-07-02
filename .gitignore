@@ -1,0 +1,7 @@
+# Backend
+lexiloop_backend/lexiloop_backend/.env
+lexiloop_backend/lexiloop_backend/__pycache__/
+lexiloop_backend/lexiloop_backend/venv/
+
+# Frontend
+lexiloop_frontend/lexiloop_frontend/node_modules/
