@@ -1,14 +1,3 @@
-"""
-database.py — MongoDB Atlas connection + collection accessors.
-
-Uses motor (the async MongoDB driver) since FastAPI endpoints are async.
-Collections:
-  users            — parent/teacher accounts (login credentials)
-  child_profiles   — one doc per child, holds the evolving reading profile
-  sessions         — one doc per reading/handwriting session
-  reading_exercises — generated exercises, linked to a child_profile
-"""
-
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.config import settings
 
@@ -20,7 +9,7 @@ def get_client() -> AsyncIOMotorClient:
     if _client is None:
         if not settings.MONGODB_URI:
             raise RuntimeError(
-                "MONGODB_URI is not set. Add it to your .env file."
+                "MONGODB_URI is not set"
             )
         _client = AsyncIOMotorClient(settings.MONGODB_URI)
     return _client
