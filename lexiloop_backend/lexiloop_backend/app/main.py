@@ -1,8 +1,3 @@
-"""
-main.py — LexiLoop FastAPI entrypoint. Run with:
-    uvicorn app.main:app --reload
-"""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -13,7 +8,7 @@ app = FastAPI(title="LexiLoop API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten this before any real deployment
+    allow_origins=["*"],   
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -21,7 +16,6 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event() -> None:
-    # Loads the T5 model once at startup, same as Dyslexia Buddy's app.py did.
     simplify_engine.load_model()
 
 
