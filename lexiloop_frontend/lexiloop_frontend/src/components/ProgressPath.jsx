@@ -1,13 +1,5 @@
-/**
- * ProgressPath — the app's signature visual. Progress is shown as a
- * winding dotted path of stepping stones rather than a bar or chart,
- * reframing "sessions completed" as a journey instead of a score.
- * Each stone lights up (filled) once that session has happened.
- */
 export default function ProgressPath({ totalSessions = 0, maxStones = 10 }) {
   const stones = Array.from({ length: maxStones }, (_, i) => i < totalSessions);
-
-  // Simple alternating zig-zag y-offsets so the path visually "winds"
   const yFor = (i) => (i % 2 === 0 ? 0 : 22);
 
   const width = maxStones * 48 + 24;
