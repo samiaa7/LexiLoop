@@ -2,7 +2,7 @@
 
 **An AI-powered adaptive reading companion for children with dyslexia.**
 
-LexiLoop combines computer vision, NLP, and an LLM-powered tutor agent to help children with dyslexia practice reading and writing — detecting handwriting difficulties, simplifying text to match a child's needs, generating personalized reading exercises, and adapting over time based on each child's evolving profile.
+LexiLoop combines computer vision, NLP, and an LLM-powered tutor agent to help children with dyslexia practice reading and writing while detecting handwriting difficulties, simplifying text to match a child's needs, generating personalized reading exercises, and adapting over time based on each child's evolving profile.
 
 ---
 
@@ -12,11 +12,11 @@ Children with dyslexia don't struggle with just one thing — reading difficulty
 
 ## What it does
 
-- **Detects handwriting patterns** — a photo of a child's handwriting is analyzed by a custom CNN to flag common dyslexia-related letter confusions (b/d, p/q, n/u, m/w, s/z) and reversal patterns.
+- **Detects handwriting patterns** — a photo of a child's handwriting is analyzed by a custom CNN to flag common dyslexia-related letter confusions and reversal patterns.
 - **Simplifies text** — a T5-based ML pipeline (with a rule-based fallback) rewrites text into simpler vocabulary and shorter sentences, scored against Flesch readability metrics.
-- **Generates personalized reading exercises** — pulls a level-appropriate story via retrieval-augmented generation and writes comprehension questions tailored to the child's recent error patterns.
-- **Tutors conversationally** — a LangChain tool-calling agent (running LLaMA3 via Groq) chats with the child, tracks mood/frustration, and updates the child's profile with what it learns each session.
-- **Tracks progress visually** — a parent/teacher dashboard shows each child's journey as a winding path of completed sessions, plus recent mood trends and reversal patterns.
+- **Generates personalized reading exercises** — pulls a suitable story via RAG and writes comprehension questions tailored to the child's recent error patterns.
+- **Tutors conversationally** — a LangChain tool-calling agent (running LLaMA3 via Groq) chats with the child, tracks mood, and updates the child's profile with what it learns each session.
+- **Tracks progress visually** — a dashboard for parents or teachers shows each child's journey as a winding path of completed sessions, plus recent mood trends and reversal patterns.
 
 ## Architecture
 
@@ -27,9 +27,9 @@ User (parent/teacher/child)
   React frontend  ──────────────►  FastAPI backend  ──────────────►  MongoDB Atlas
   (dashboard, capture UI,          (JWT auth, routes)                (evolving child
    exercises, chat)                       │                           profiles, sessions)
-                                            │
-                        ┌───────────────────┴───────────────────┐
-                        ▼                                       ▼
+                                          │
+                        ┌────────────────────────────────────┐
+                        ▼                                    ▼
               CNN handwriting detector              LangChain reading-tutor agent
               (CNN + Mediapipe,                     (LLaMA3 via Groq)
                reused from the                      Tools: simplify_text, retrieve_story
@@ -62,10 +62,9 @@ lexiloop_backend/
 │   ├── schemas.py                # Pydantic models
 │   ├── routers/                 # /auth, /children, /detect, /simplify, /chat, /exercises
 │   └── ai/
-│       ├── handwriting/         # CNN model + analyzer (reused from Handwriting Analyzer)
-│       ├── simplify_engine.py   # T5 pipeline (reused from Dyslexia Buddy)
+│       ├── handwriting/         # CNN model + analyzer 
+│       ├── simplify_engine.py   # T5 pipeline
 │       └── agent/               # LangChain agent, tools, story library
-└── requirements.txt
 
 lexiloop_frontend/
 ├── src/
@@ -76,31 +75,4 @@ lexiloop_frontend/
 └── package.json
 ```
 
-## Setup
-
-### Backend
-```bash
-cd lexiloop_backend
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env        # fill in MONGODB_URI, GROQ_API_KEY, JWT_SECRET
-python app/ai/handwriting/model.py --train   # trains the CNN checkpoint (one-time)
-uvicorn app.main:app --reload
-```
-
-### Frontend
-```bash
-cd lexiloop_frontend
-npm install
-npm run dev
-```
-
-Visit `http://localhost:5173`. The backend runs at `http://127.0.0.1:8000` (Swagger docs at `/docs`). MongoDB Atlas and Groq are cloud-hosted — no local services to run beyond the two commands above.
-
-## Status
-
-This is an active project built to demonstrate full-stack AI engineering — from a trained CNN through an LLM agent to a working UI. The CNN checkpoint requires local training (not included, as it's a large binary), and this has been tested component-by-component rather than under real classroom conditions. Next steps: end-to-end testing with sample child profiles, and optional deployment to Azure ML / Azure App Service.
-
-## Credits
-
-Built by Samia, drawing on two earlier standalone projects — **Dyslexia Buddy** (text simplification and readability scoring) and the **Dyslexic Handwriting Analyzer** (CNN-based reversal detection) — combined into one integrated system, with architecture inspired by production patterns used in real internship projects at Mazik Global.
+Visit `http://localhost:5173`. The backend runs at `http://127.0.0.1:8000` (Swagger docs at `/docs`). MongoDB Atlas and Groq are cloud hosted.
